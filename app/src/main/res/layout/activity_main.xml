@@ -29,14 +29,17 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-      android:id="@+id/fab"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+    <ImageButton
+      android:id="@+id/autoRefreshButton"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
       android:layout_gravity="bottom|end"
       android:layout_marginEnd="34dp"
       android:layout_marginBottom="34dp"
+      android:padding="1dp"
       android:src="@android:drawable/ic_popup_sync"
+      android:backgroundTint="@color/colorAccent"
+      android:background="@drawable/roundedcorner"
       app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
       app:layout_constraintEnd_toEndOf="@+id/linearLayout" />
 
