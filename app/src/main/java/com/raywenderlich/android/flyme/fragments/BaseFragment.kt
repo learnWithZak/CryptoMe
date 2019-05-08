@@ -110,20 +110,17 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
         mSwipeRefreshLayout.isRefreshing = true
 
-        var scheduler = Observable.interval(0, 5, TimeUnit.SECONDS)
-
-        val disposable = scheduler.timeInterval()
-            .subscribe(viewModel.getCryptoData(currencies)
+        val disposable = subscribe(viewModel.getCryptoData(currencies)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                Timber.d("Received View Model Data: $it ")
+                Timber.d("Received UIModel $it users.")
                 handleResponse(it)
             }, {
                 Timber.w(it)
             }))
 
-        scheduler
+        disposables.add(disposable)
     }
 
     private fun handleResponse(cryptoDataList: List<CryptoData>) {
