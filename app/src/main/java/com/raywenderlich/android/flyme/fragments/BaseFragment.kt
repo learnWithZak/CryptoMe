@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.media.Image
 import android.os.Bundle
+import android.os.health.SystemHealthManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.operators.flowable.FlowableReplay.observeOn
+import io.reactivex.internal.util.HalfSerializer.onError
+import io.reactivex.plugins.RxJavaPlugins.onError
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -108,19 +111,37 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
     private fun loadData() {
 
-        mSwipeRefreshLayout.isRefreshing = true
-
-        val disposable = subscribe(viewModel.getCryptoData(currencies)
-            .subscribeOn(Schedulers.io())
+        val disposable = Observable.interval(1000, 5000,
+            TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Timber.d("Received UIModel $it users.")
-                handleResponse(it)
-            }, {
-                Timber.w(it)
-            }))
+            .subscribe(this::callJokesEndpoint, this::onError)
 
         disposables.add(disposable)
+
+        System.out.println(disposables.size())
+    }
+
+    private fun onError(throwable: Throwable) {
+        Timber.log(1, "OnError in Observable Time")
+    }
+
+    private fun callJokesEndpoint(aLong: Long) {
+
+        mSwipeRefreshLayout.isRefreshing = true
+
+        val observable: Observable<List<CryptoData>> = viewModel.getCryptoData(currencies)
+        observable.subscribeOn(Schedulers.newThread()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    Timber.d("Received UIModel $it users.")
+                    handleResponse(it)
+                }, {
+                    Timber.w(it)
+                })
+    }
+
+    private fun handleError(t: Throwable) {
+        //Add your error here.
     }
 
     private fun handleResponse(cryptoDataList: List<CryptoData>) {
