@@ -19,12 +19,9 @@ Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
   }
 
-  private val colors : Array<String> = arrayOf("#7E57C2", "#42A5F5", "#26C6DA", "#66BB6A", "#FFEE58", "#FF7043" , "#EC407A" , "#d32f2f")
-
-
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-    holder.bind(cryptoList[position], listener, colors, position)
+    holder.bind(cryptoList[position], listener)
 
   }
 
@@ -37,10 +34,9 @@ Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
   class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(cryptoData: CryptoData, listener: Listener, colors : Array<String>, position: Int) {
+    fun bind(cryptoData: CryptoData, listener: Listener) {
 
       itemView.setOnClickListener{ listener.onItemClick(cryptoData) }
-      itemView.setBackgroundColor(Color.parseColor(colors[position % 8]))
       itemView.text_name.text = cryptoData.name
       itemView.text_price.text = getPricesString(cryptoData.prices)
     }

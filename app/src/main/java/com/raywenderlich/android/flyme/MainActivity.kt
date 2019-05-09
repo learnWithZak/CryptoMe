@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.raywenderlich.android.flyme.adapters.FragmentAdapter
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         try {
             this.supportActionBar!!.hide()
         } catch (e: NullPointerException) {
-            System.err.println(e.toString())
+            Timber.e(e.toString())
         }
     }
 

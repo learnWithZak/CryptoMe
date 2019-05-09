@@ -22,7 +22,6 @@ class CryptoDataViewModel(val cryptoDataRepository: CryptoDataRepository) {
     fun getCryptoData(currencies: String): Observable<List<CryptoData>> {
         return cryptoDataRepository.getCryptoData(currencies)
             .map {
-                Timber.d("Mapping crypto data to UIData...")
                 handleResult(it)
             }
             .onErrorReturn {
@@ -49,9 +48,4 @@ class CryptoDataViewModel(val cryptoDataRepository: CryptoDataRepository) {
         return cryptoData
     }
 
-    private fun handleResponse(cryptoDataList: List<CryptoData>) {
-
-        System.out.println(cryptoDataList.toString())
-
-    }
 }

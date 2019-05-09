@@ -1,6 +1,7 @@
 package com.raywenderlich.android.flyme.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.media.Image
 import android.os.Bundle
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.raywenderlich.android.flyme.App
+import com.raywenderlich.android.flyme.DetailActivity
 import com.raywenderlich.android.flyme.R
 import com.raywenderlich.android.flyme.adapters.CryptoDataAdapter
 import com.raywenderlich.android.flyme.models.CryptoData
@@ -41,9 +43,11 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     private val viewModel = App.injectCryptoDataViewModel()
     private val disposables = CompositeDisposable()
 
-    private lateinit var cryptocurrency_list: RecyclerView
+    private lateinit var cryptocurrencyList: RecyclerView
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var autoRefreshButton: ImageButton
+
+    private val INITIAL_DELAY_IN_MILLISECONDS: Long = 1000
+    private var INTERVAL_IN_MILLISECONDS: Long = 10000
 
     private var currencies: String = ""
 
@@ -58,7 +62,6 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
         readBundle(getArguments())
 
-        initFAB()
         initRecyclerView(view)
 
         return view
@@ -68,37 +71,42 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
         super.onStart()
 
         loadData()
+
+        Timber.d("OnStart, LoadData")
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        loadData()
+
+        Timber.d("onResume, LoadData")
     }
 
     override fun onRefresh() {
         loadData()
+
+        Timber.d("onRefresh, LoadData")
     }
 
-    fun subscribe(disposable: Disposable): Disposable {
-        disposables.add(disposable)
-        return disposable
+    override fun onPause() {
+        super.onPause()
+        disposables.clear()
+
+        Timber.d("onPause, Clear Disposables")
     }
 
     override fun onStop() {
         super.onStop()
         disposables.clear()
-    }
 
-    private fun initFAB() {
-        autoRefreshButton = activity!!.findViewById(R.id.autoRefreshButton)
-        autoRefreshButton.isSelected = false
-        updateButtonStyle()
-
-        autoRefreshButton.setOnClickListener {
-            toggleButton()
-            updateButtonStyle()
-        }
+        Timber.d("onStop, Clear Disposables")
     }
 
     private fun initRecyclerView(view: View) {
         val layoutManager : RecyclerView.LayoutManager = LinearLayoutManager(activity)
-        cryptocurrency_list = view.findViewById(R.id.cryptocurrency_list)
-        cryptocurrency_list.layoutManager = layoutManager
+        cryptocurrencyList = view.findViewById(R.id.cryptocurrency_list)
+        cryptocurrencyList.layoutManager = layoutManager
 
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_container)
         mSwipeRefreshLayout.setOnRefreshListener(this)
@@ -111,21 +119,24 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
     private fun loadData() {
 
-        val disposable = Observable.interval(1000, 5000,
+        Timber.d("Downloading Data ...")
+
+        val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS,
             TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::callJokesEndpoint, this::onError)
+            .subscribe(this::updateCryptoData, this::onError)
+
+        Timber.d("Disposable added!")
 
         disposables.add(disposable)
 
-        System.out.println(disposables.size())
     }
 
     private fun onError(throwable: Throwable) {
-        Timber.log(1, "OnError in Observable Time")
+        Timber.d("OnError in Observable Time")
     }
 
-    private fun callJokesEndpoint(aLong: Long) {
+    private fun updateCryptoData(aLong: Long) {
 
         mSwipeRefreshLayout.isRefreshing = true
 
@@ -136,31 +147,27 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
                     Timber.d("Received UIModel $it users.")
                     handleResponse(it)
                 }, {
-                    Timber.w(it)
+                    handleError(it)
                 })
     }
 
     private fun handleError(t: Throwable) {
-        //Add your error here.
+        Timber.e(t)
     }
 
     private fun handleResponse(cryptoDataList: List<CryptoData>) {
 
         cryptoDataAdapter = CryptoDataAdapter(ArrayList(cryptoDataList), this)
-        cryptocurrency_list.adapter = cryptoDataAdapter
+        cryptocurrencyList.adapter = cryptoDataAdapter
 
         mSwipeRefreshLayout.isRefreshing = false
+
+        Timber.d("We have ${disposables.size()} disposables")
     }
 
     override fun onItemClick(cryptoData: CryptoData) {
-        Toast.makeText(activity, "You clicked: ${cryptoData.name}", Toast.LENGTH_LONG).show()
+        val intent = Intent(activity, DetailActivity::class.java)
+        startActivity(intent)
     }
 
-    private fun toggleButton() {
-        autoRefreshButton.isSelected = !autoRefreshButton.isSelected
-    }
-
-    private fun updateButtonStyle() {
-        autoRefreshButton.alpha = if (autoRefreshButton.isSelected) 1.0F else 0.2F
-    }
 }

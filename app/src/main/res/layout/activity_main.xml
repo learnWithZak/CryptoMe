@@ -17,10 +17,10 @@
           android:id="@+id/tabLayout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:background="@color/colorAccent"
+          android:background="@color/colorPrimary"
           app:layout_constraintTop_toTopOf="@+id/viewPager"
           app:tabSelectedTextColor="#FFFFFF"
-          app:tabTextColor="@color/colorPrimary" />
+          app:tabTextColor="@color/Nepal" />
 
         <androidx.viewpager.widget.ViewPager
           android:id="@+id/viewPager"
@@ -28,20 +28,6 @@
           android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-    <ImageButton
-      android:id="@+id/autoRefreshButton"
-      android:layout_width="50dp"
-      android:layout_height="50dp"
-      android:layout_gravity="bottom|end"
-      android:layout_marginEnd="34dp"
-      android:layout_marginBottom="34dp"
-      android:padding="1dp"
-      android:src="@android:drawable/ic_popup_sync"
-      android:backgroundTint="@color/colorAccent"
-      android:background="@drawable/roundedcorner"
-      app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-      app:layout_constraintEnd_toEndOf="@+id/linearLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
