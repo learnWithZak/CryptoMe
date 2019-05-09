@@ -167,6 +167,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
     override fun onItemClick(cryptoData: CryptoData) {
         val intent = Intent(activity, DetailActivity::class.java)
+        intent.putExtra("CryptoName", cryptoData.name)
         startActivity(intent)
     }
 

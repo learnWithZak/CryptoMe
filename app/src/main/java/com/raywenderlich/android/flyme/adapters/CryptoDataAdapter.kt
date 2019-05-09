@@ -19,9 +19,11 @@ Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
   }
 
+  private val icons: Array<Int> = arrayOf(R.drawable.btc, R.drawable.eth, R.drawable.ltc)
+
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-    holder.bind(cryptoList[position], listener)
+    holder.bind(cryptoList[position], listener, icons, position)
 
   }
 
@@ -34,9 +36,10 @@ Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
   class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(cryptoData: CryptoData, listener: Listener) {
+    fun bind(cryptoData: CryptoData, listener: Listener, icons : Array<Int>, position: Int) {
 
       itemView.setOnClickListener{ listener.onItemClick(cryptoData) }
+      itemView.icon_view.setImageResource(icons[position])
       itemView.text_name.text = cryptoData.name
       itemView.text_price.text = getPricesString(cryptoData.prices)
     }
