@@ -6,10 +6,6 @@ import io.reactivex.Observable
 
 class CryptoDataRepository(private val cryptoDataAPI: CryptoDataAPI) {
 
-  fun getCryptoData(currencies: String): Observable<LinkedTreeMap<Object, Object>> {
-    return cryptoDataAPI.getCryptoData(currencies)
-        .doOnNext {
-          Log.d("getCryptoData", "Dispatching ${it.size} crypto data from API...")
-        }
-  }
+    //TODO: Create a function to call API and return an Observable
+
 }

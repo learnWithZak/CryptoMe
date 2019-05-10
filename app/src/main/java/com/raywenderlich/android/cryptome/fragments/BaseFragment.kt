@@ -1,6 +1,5 @@
 package com.raywenderlich.android.cryptome.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,25 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.raywenderlich.android.cryptome.App
-import com.raywenderlich.android.cryptome.DetailActivity
 import com.raywenderlich.android.cryptome.R
 import com.raywenderlich.android.cryptome.adapters.CryptoDataAdapter
 import com.raywenderlich.android.cryptome.models.CryptoData
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
-const val INITIAL_DELAY_IN_MILLISECONDS: Long = 1000
-const val INTERVAL_IN_MILLISECONDS: Long = 10000
+//TODO: Constant Values for Initial Delay and Interval
 
 open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLayout.OnRefreshListener {
 
   private var cryptoDataAdapter: CryptoDataAdapter? = null
 
   private val viewModel = App.injectCryptoDataViewModel()
-  private val disposables = CompositeDisposable()
+  //TODO: Declare Disposables
 
   private lateinit var cryptocurrencyList: RecyclerView
   private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -76,16 +68,14 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
   override fun onPause() {
     super.onPause()
-    disposables.clear()
 
-    Log.d("onPause", "Clear Disposables")
+    //TODO: Clear Disposables
   }
 
   override fun onStop() {
     super.onStop()
-    disposables.clear()
 
-    Log.d("onStop", "Clear Disposables")
+    //TODO: Clear Disposables
   }
 
   private fun initRecyclerView(view: View) {
@@ -104,55 +94,17 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
   private fun loadData() {
 
-    Log.d("loadData", "Downloading Data ...")
-
-    val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS,
-        TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::updateCryptoData, this::onError)
-
-    Log.d("loadData", "Disposable added!")
-
-    disposables.add(disposable)
+    //TODO: Call API using Observable
 
   }
 
-  private fun onError(throwable: Throwable) {
-    Log.d("onError", "OnError in Observable Time: $throwable")
-  }
+  //TODO: Handle API Error
 
-  private fun updateCryptoData(aLong: Long) {
 
-    mSwipeRefreshLayout.isRefreshing = true
-
-    val observable: Observable<List<CryptoData>> = viewModel.getCryptoData(currencies)
-    observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-        .subscribe({
-          Log.d("updateCryptoData", "Received UIModel $it users.")
-          handleResponse(it)
-        }, {
-          handleError(it)
-        })
-  }
-
-  private fun handleError(t: Throwable) {
-    Log.d("handlleError", "Error: $t")
-  }
-
-  private fun handleResponse(cryptoDataList: List<CryptoData>) {
-
-    cryptoDataAdapter = CryptoDataAdapter(ArrayList(cryptoDataList), this)
-    cryptocurrencyList.adapter = cryptoDataAdapter
-
-    mSwipeRefreshLayout.isRefreshing = false
-
-    Log.d("handleResponse", "We have ${disposables.size()} disposables")
-  }
+  //TODO: Handle API Response
 
   override fun onItemClick(cryptoData: CryptoData) {
-    val intent = Intent(activity, DetailActivity::class.java)
-    intent.putExtra("CryptoName", cryptoData.name)
-    startActivity(intent)
+    //TODO: Handle Item Click
   }
 
 }

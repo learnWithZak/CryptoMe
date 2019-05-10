@@ -5,20 +5,10 @@ import com.google.gson.internal.LinkedTreeMap
 import com.raywenderlich.android.cryptome.helper.*
 import com.raywenderlich.android.cryptome.models.CryptoData
 import com.raywenderlich.android.cryptome.models.Price
-import io.reactivex.Observable
 
 class CryptoDataViewModel(private val cryptoDataRepository: CryptoDataRepository) {
 
-    fun getCryptoData(currencies: String): Observable<List<CryptoData>> {
-        return cryptoDataRepository.getCryptoData(currencies)
-            .map {
-                handleResult(it)
-            }
-            .onErrorReturn {
-                Log.d("getCryptoData", "An error occurred")
-                arrayListOf<CryptoData>().toList()
-            }
-    }
+    //TODO: Call Get Crypto Data Function
 
     private fun handleResult(result: LinkedTreeMap<Object, Object>): List<CryptoData> {
         val cryptoData = ArrayList<CryptoData>()

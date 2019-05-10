@@ -12,5 +12,6 @@ const val BASEURL = "https://min-api.cryptocompare.com/"
 interface CryptoDataAPI {
   @Headers("Authorization: $APIKEY")
   @GET("data/pricemulti?fsyms=BTC,ETH,LTC")
-  fun getCryptoData(@Query("tsyms") currencies: String): Observable<LinkedTreeMap<Object, Object>>
+  fun getCryptoData()
+  //TODO: Declare the function to return an Observable
 }
