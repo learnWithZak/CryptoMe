@@ -1,19 +1,19 @@
-package com.raywenderlich.android.flyme.fragments
+package com.raywenderlich.android.cryptome.fragments
 
 import android.os.Bundle
 
 class SecondFragment: BaseFragment() {
 
-    companion object {
-        fun newInstance(currencies: String): SecondFragment {
-            val bundle = Bundle()
-            bundle.putString("currencies", currencies)
+  companion object {
+    fun newInstance(currencies: String): SecondFragment {
+      val bundle = Bundle()
+      bundle.putString("currencies", currencies)
 
-            val fragment = SecondFragment()
-            fragment.arguments = bundle
+      val fragment = SecondFragment()
+      fragment.arguments = bundle
 
-            return fragment
-        }
+      return fragment
     }
+  }
 
 }

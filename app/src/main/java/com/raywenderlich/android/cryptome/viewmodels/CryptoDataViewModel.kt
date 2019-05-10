@@ -1,23 +1,13 @@
-package com.raywenderlich.android.flyme.viewmodels
+package com.raywenderlich.android.cryptome.viewmodels
 
+import android.util.Log
 import com.google.gson.internal.LinkedTreeMap
-import com.raywenderlich.android.flyme.adapters.CryptoDataAdapter
-import com.raywenderlich.android.flyme.helper.*
-import com.raywenderlich.android.flyme.models.CryptoData
-import com.raywenderlich.android.flyme.models.Price
+import com.raywenderlich.android.cryptome.helper.*
+import com.raywenderlich.android.cryptome.models.CryptoData
+import com.raywenderlich.android.cryptome.models.Price
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Query
-import timber.log.Timber
 
-class CryptoDataViewModel(val cryptoDataRepository: CryptoDataRepository) {
+class CryptoDataViewModel(private val cryptoDataRepository: CryptoDataRepository) {
 
     fun getCryptoData(currencies: String): Observable<List<CryptoData>> {
         return cryptoDataRepository.getCryptoData(currencies)
@@ -25,17 +15,17 @@ class CryptoDataViewModel(val cryptoDataRepository: CryptoDataRepository) {
                 handleResult(it)
             }
             .onErrorReturn {
-                Timber.d("An error occurred")
+                Log.d("getCryptoData", "An error occurred")
                 arrayListOf<CryptoData>().toList()
             }
     }
 
     private fun handleResult(result: LinkedTreeMap<Object, Object>): List<CryptoData> {
-        var cryptoData = ArrayList<CryptoData>()
+        val cryptoData = ArrayList<CryptoData>()
         for (entry in result.entries) {
             val cryptoTitle = entry.key as String
             val priceMap = entry.value as LinkedTreeMap<String, Float>
-            var prices = ArrayList<Price>()
+            val prices = ArrayList<Price>()
             for (price in priceMap.entries) {
                 val newPrice = Price(price.key, price.value)
                 prices.add(newPrice)

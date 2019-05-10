@@ -1,42 +1,39 @@
-package com.raywenderlich.android.flyme
+package com.raywenderlich.android.cryptome
 
 import android.app.Application
-import com.raywenderlich.android.flyme.helper.BASEURL
-import com.raywenderlich.android.flyme.helper.CryptoDataAPI
-import com.raywenderlich.android.flyme.helper.CryptoDataRepository
-import com.raywenderlich.android.flyme.viewmodels.CryptoDataViewModel
+import com.raywenderlich.android.cryptome.helper.BASEURL
+import com.raywenderlich.android.cryptome.helper.CryptoDataAPI
+import com.raywenderlich.android.cryptome.helper.CryptoDataRepository
+import com.raywenderlich.android.cryptome.viewmodels.CryptoDataViewModel
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 
-class App: Application() {
+class App : Application() {
 
-    companion object {
-        private lateinit var retrofit: Retrofit
-        private lateinit var cryptoDataApi: CryptoDataAPI
-        private lateinit var cryptoDataRepository: CryptoDataRepository
-        private lateinit var cryptoDataViewModel: CryptoDataViewModel
+  companion object {
+    private lateinit var retrofit: Retrofit
+    private lateinit var cryptoDataApi: CryptoDataAPI
+    private lateinit var cryptoDataRepository: CryptoDataRepository
+    private lateinit var cryptoDataViewModel: CryptoDataViewModel
 
-        fun injectCryptoDataViewModel() = cryptoDataViewModel
-    }
+    fun injectCryptoDataViewModel() = cryptoDataViewModel
+  }
 
-    override fun onCreate() {
-        super.onCreate()
-        Timber.uprootAll()
-        Timber.plant(Timber.DebugTree())
+  override fun onCreate() {
+    super.onCreate()
 
-        retrofit = Retrofit.Builder()
-            .baseUrl(BASEURL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+    retrofit = Retrofit.Builder()
+        .baseUrl(BASEURL)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-        cryptoDataApi = retrofit.create(
-            CryptoDataAPI::class.java)
+    cryptoDataApi = retrofit.create(
+        CryptoDataAPI::class.java)
 
-        cryptoDataRepository =
-            CryptoDataRepository(cryptoDataApi)
-        cryptoDataViewModel = CryptoDataViewModel(cryptoDataRepository)
-    }
+    cryptoDataRepository =
+        CryptoDataRepository(cryptoDataApi)
+    cryptoDataViewModel = CryptoDataViewModel(cryptoDataRepository)
+  }
 }

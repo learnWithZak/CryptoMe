@@ -1,22 +1,20 @@
-package com.raywenderlich.android.flyme.adapters
+package com.raywenderlich.android.cryptome.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.raywenderlich.android.flyme.models.CryptoData
-import com.raywenderlich.android.flyme.models.Price
-import com.raywenderlich.android.flyme.R
+import com.raywenderlich.android.cryptome.models.CryptoData
+import com.raywenderlich.android.cryptome.models.Price
+import com.raywenderlich.android.cryptome.R
 import kotlinx.android.synthetic.main.row_layout.view.*
 
-class CryptoDataAdapter (private val cryptoList : ArrayList<CryptoData>, private val listener :
+class CryptoDataAdapter(
+    private val cryptoList: ArrayList<CryptoData>,
+    private val listener: Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
-
-Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
   interface Listener {
-    fun onItemClick(retroCrypto : CryptoData)
-
+    fun onItemClick(retroCrypto: CryptoData)
   }
 
   private val icons: Array<Int> = arrayOf(R.drawable.btc, R.drawable.eth, R.drawable.ltc)
@@ -34,11 +32,11 @@ Listener) : RecyclerView.Adapter<CryptoDataAdapter.ViewHolder>() {
 
   }
 
-  class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
+  class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(cryptoData: CryptoData, listener: Listener, icons : Array<Int>, position: Int) {
+    fun bind(cryptoData: CryptoData, listener: Listener, icons: Array<Int>, position: Int) {
 
-      itemView.setOnClickListener{ listener.onItemClick(cryptoData) }
+      itemView.setOnClickListener { listener.onItemClick(cryptoData) }
       itemView.icon_view.setImageResource(icons[position])
       itemView.text_name.text = cryptoData.name
       itemView.text_price.text = getPricesString(cryptoData.prices)
