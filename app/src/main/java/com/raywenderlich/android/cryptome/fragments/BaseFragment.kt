@@ -1,5 +1,6 @@
 package com.raywenderlich.android.cryptome.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,18 +11,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.raywenderlich.android.cryptome.App
+import com.raywenderlich.android.cryptome.DetailActivity
 import com.raywenderlich.android.cryptome.R
 import com.raywenderlich.android.cryptome.adapters.CryptoDataAdapter
 import com.raywenderlich.android.cryptome.models.CryptoData
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
-//TODO: Constant Values for Initial Delay and Interval
+
+//TODO 5: Constant Values for Initial Delay and Interval
 
 open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLayout.OnRefreshListener {
 
   private var cryptoDataAdapter: CryptoDataAdapter? = null
 
   private val viewModel = App.injectCryptoDataViewModel()
-  //TODO: Declare Disposables
+  //TODO 11: Declare Disposables
+  private val disposables = CompositeDisposable()
 
   private lateinit var cryptocurrencyList: RecyclerView
   private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -69,13 +78,13 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   override fun onPause() {
     super.onPause()
 
-    //TODO: Clear Disposables
+    //TODO 13: Clear Disposables
   }
 
   override fun onStop() {
     super.onStop()
 
-    //TODO: Clear Disposables
+    //TODO 14: Clear Disposables
   }
 
   private fun initRecyclerView(view: View) {
@@ -93,18 +102,22 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   }
 
   private fun loadData() {
-
-    //TODO: Call API using Observable
-
+    //TODO 6: Call API using Observable
+    //TODO 12: Add Disposables
   }
 
-  //TODO: Handle API Error
+  //TODO 7: Add Update Crypto Data
 
+  //TODO 8: Add onError
 
-  //TODO: Handle API Response
+  //TODO 9: Handle API Response & Error
+
+  private fun handleError(t: Throwable) {
+    Log.d("handlleError", "Error: $t")
+  }
 
   override fun onItemClick(cryptoData: CryptoData) {
-    //TODO: Handle Item Click
+    //TODO 10: Handle Item Click
   }
 
 }

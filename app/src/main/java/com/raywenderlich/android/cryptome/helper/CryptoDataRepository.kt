@@ -5,7 +5,5 @@ import com.google.gson.internal.LinkedTreeMap
 import io.reactivex.Observable
 
 class CryptoDataRepository(private val cryptoDataAPI: CryptoDataAPI) {
-
-    //TODO: Create a function to call API and return an Observable
-
+  //TODO 3: Create a function to call API and return an Observable
 }
