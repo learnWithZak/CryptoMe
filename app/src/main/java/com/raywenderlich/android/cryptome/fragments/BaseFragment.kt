@@ -30,7 +30,6 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
   private val viewModel = App.injectCryptoDataViewModel()
   //TODO 11: Declare Disposables
-  private val disposables = CompositeDisposable()
 
   private lateinit var cryptocurrencyList: RecyclerView
   private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -111,10 +110,6 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   //TODO 8: Add onError
 
   //TODO 9: Handle API Response & Error
-
-  private fun handleError(t: Throwable) {
-    Log.d("handlleError", "Error: $t")
-  }
 
   override fun onItemClick(cryptoData: CryptoData) {
     //TODO 10: Handle Item Click

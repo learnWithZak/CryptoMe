@@ -11,7 +11,7 @@ class CryptoDataViewModel(private val cryptoDataRepository: CryptoDataRepository
 
   //TODO 4: Implement Function to Pass Data to ViewModel
 
-  private fun handleResult(result: LinkedTreeMap<Object, Object>): List<CryptoData> {
+  private fun handleResult(result: LinkedTreeMap<Any, Any>): List<CryptoData> {
     val cryptoData = ArrayList<CryptoData>()
     for (entry in result.entries) {
       val cryptoTitle = entry.key as String
