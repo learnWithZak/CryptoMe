@@ -18,6 +18,7 @@ import com.raywenderlich.android.cryptome.models.CryptoData
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +31,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   private var cryptoDataAdapter: CryptoDataAdapter? = null
 
   private val viewModel = App.injectCryptoDataViewModel()
-  //TODO 11: Declare Disposables
+  private val disposables = CompositeDisposable()
 
   private lateinit var cryptocurrencyList: RecyclerView
   private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
@@ -78,13 +79,15 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   override fun onPause() {
     super.onPause()
 
-    //TODO 13: Clear Disposables
+    disposables.clear()
+    Log.d("onPause", "Clear Disposables")
   }
 
   override fun onStop() {
     super.onStop()
 
-    //TODO 14: Clear Disposables
+    disposables.clear()
+    Log.d("onStop", "Clear Disposables")
   }
 
   private fun initRecyclerView(view: View) {
@@ -106,7 +109,10 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
     val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(::updateCryptoData, ::onError)
+      .subscribe(this::updateCryptoData, ::onError)
+
+    Log.d("loadData", "Disposable added!")
+    disposables.add(disposable)
   }
 
   private fun updateCryptoData(aLong: Long) {
@@ -120,7 +126,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
         handleResponse(it)
       },{
         handleError(it)
-      })
+      }).addTo(disposables)
   }
 
   private fun onError(throwable: Throwable) {
@@ -131,6 +137,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     cryptoDataAdapter = CryptoDataAdapter(ArrayList(cryptoDataList), this)
     cryptocurrencyList.adapter = cryptoDataAdapter
     mSwipeRefreshLayout.isRefreshing = false
+    Log.d("handleResponse", "we have ${disposables.size()} disposables")
   }
 
   private fun handleError(t: Throwable) {
