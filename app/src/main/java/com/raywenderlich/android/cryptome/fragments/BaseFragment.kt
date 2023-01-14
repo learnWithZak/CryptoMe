@@ -22,7 +22,8 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 
-//TODO 5: Constant Values for Initial Delay and Interval
+const val INITIAL_DELAY_IN_MILLISECONDS: Long = 1000
+const val INTERVAL_IN_MILLISECONDS: Long = 10000
 
 open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -101,18 +102,45 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   }
 
   private fun loadData() {
-    //TODO 6: Call API using Observable
-    //TODO 12: Add Disposables
+    Log.d("loadData", "Downloading Data ...")
+
+    val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS, TimeUnit.MILLISECONDS)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(::updateCryptoData, ::onError)
   }
 
-  //TODO 7: Add Update Crypto Data
+  private fun updateCryptoData(aLong: Long) {
+    mSwipeRefreshLayout.isRefreshing = true
+    val observable: Observable<List<CryptoData>> = viewModel.getCryptoData(currencies)
+    observable
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe({
+                 Log.d("updateCryptoData", "Received UIModel $it users.")
+        handleResponse(it)
+      },{
+        handleError(it)
+      })
+  }
 
-  //TODO 8: Add onError
+  private fun onError(throwable: Throwable) {
+    Log.d("onError", "OnError in Observable Time: $throwable")
+  }
 
-  //TODO 9: Handle API Response & Error
+  private fun handleResponse(cryptoDataList: List<CryptoData>) {
+    cryptoDataAdapter = CryptoDataAdapter(ArrayList(cryptoDataList), this)
+    cryptocurrencyList.adapter = cryptoDataAdapter
+    mSwipeRefreshLayout.isRefreshing = false
+  }
+
+  private fun handleError(t: Throwable) {
+    Log.d("HandleError", "Error $t")
+  }
 
   override fun onItemClick(cryptoData: CryptoData) {
-    //TODO 10: Handle Item Click
+    val intent = Intent(activity, DetailActivity::class.java)
+    intent.putExtra("CryptoName", cryptoData.name)
+    startActivity(intent)
   }
 
 }
